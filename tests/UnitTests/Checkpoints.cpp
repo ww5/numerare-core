@@ -1,0 +1,165 @@
+/***
+	MIT License
+
+	Copyright (c) 2018 NUMERARE
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+
+	Parts of this file are originally Copyright (c) 2012-2017 The CryptoNote developers, The Bytecoin developers
+***/
+
+#include "gtest/gtest.h"
+
+#include "CryptoNoteCore/Checkpoints.h"
+#include <Logging/LoggerGroup.h>
+
+using namespace CryptoNote;
+
+TEST(checkpoints_isAlternativeBlockAllowed, handles_empty_checkpoins)
+{
+  Logging::LoggerGroup logger;
+  Checkpoints cp(logger);
+
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(0, 0));
+
+  ASSERT_TRUE(cp.isAlternativeBlockAllowed(1, 1));
+  ASSERT_TRUE(cp.isAlternativeBlockAllowed(1, 9));
+  ASSERT_TRUE(cp.isAlternativeBlockAllowed(9, 1));
+}
+
+TEST(checkpoints_isAlternativeBlockAllowed, handles_one_checkpoint)
+{
+  Logging::LoggerGroup logger;
+  Checkpoints cp(logger);
+  cp.addCheckpoint(5, "0000000000000000000000000000000000000000000000000000000000000000");
+
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(0, 0));
+
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(1, 1));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(1, 4));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(1, 5));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(1, 6));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(1, 9));
+
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(4, 1));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(4, 4));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(4, 5));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(4, 6));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(4, 9));
+
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(5, 1));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(5, 4));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(5, 5));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(5, 6));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(5, 9));
+
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(6, 1));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(6, 4));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(6, 5));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(6, 6));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(6, 9));
+
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(9, 1));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(9, 4));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(9, 5));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(9, 6));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(9, 9));
+}
+
+TEST(checkpoints_isAlternativeBlockAllowed, handles_two_and_more_checkpoints)
+{
+  Logging::LoggerGroup logger;
+  Checkpoints cp(logger);
+  cp.addCheckpoint(5, "0000000000000000000000000000000000000000000000000000000000000000");
+  cp.addCheckpoint(9, "0000000000000000000000000000000000000000000000000000000000000000");
+
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(0, 0));
+
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(1, 1));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(1, 4));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(1, 5));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(1, 6));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(1, 8));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(1, 9));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(1, 10));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(1, 11));
+
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(4, 1));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(4, 4));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(4, 5));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(4, 6));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(4, 8));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(4, 9));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(4, 10));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(4, 11));
+
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(5, 1));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(5, 4));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(5, 5));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(5, 6));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(5, 8));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(5, 9));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(5, 10));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(5, 11));
+
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(6, 1));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(6, 4));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(6, 5));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(6, 6));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(6, 8));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(6, 9));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(6, 10));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(6, 11));
+
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(8, 1));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(8, 4));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(8, 5));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(8, 6));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(8, 8));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(8, 9));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(8, 10));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(8, 11));
+
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(9, 1));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(9, 4));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(9, 5));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(9, 6));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(9, 8));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(9, 9));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(9, 10));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(9, 11));
+
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(10, 1));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(10, 4));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(10, 5));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(10, 6));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(10, 8));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(10, 9));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(10, 10));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(10, 11));
+
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(11, 1));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(11, 4));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(11, 5));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(11, 6));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(11, 8));
+  ASSERT_FALSE(cp.isAlternativeBlockAllowed(11, 9));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(11, 10));
+  ASSERT_TRUE (cp.isAlternativeBlockAllowed(11, 11));
+}
