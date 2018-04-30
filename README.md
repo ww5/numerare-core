@@ -1,5 +1,5 @@
 ### About
-Numerare is new privacy cryptocoin based on cryptnote.
+Numerare is new privacy cryptocoin based on cryptonote.
 
 ### Dependencies
 * GCC 4.7.3 or later     (http://gcc.gnu.org/)
