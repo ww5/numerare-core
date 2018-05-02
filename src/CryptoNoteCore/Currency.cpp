@@ -183,40 +183,15 @@ uint32_t Currency::upgradeHeight(uint8_t majorVersion) const {
 }
 
 bool Currency::getBlockReward(uint8_t blockMajorVersion, size_t medianSize, size_t currentBlockSize, uint64_t alreadyGeneratedCoins,
-	uint64_t fee, uint64_t& reward, int64_t& emissionChange) const {
-	/*assert(alreadyGeneratedCoins <= m_moneySupply);
-	assert(m_emissionSpeedFactor > 0 && m_emissionSpeedFactor <= 8 * sizeof(uint64_t));
-
-	uint64_t baseReward = (m_moneySupply - alreadyGeneratedCoins) >> m_emissionSpeedFactor;
-	if (alreadyGeneratedCoins == 0 && m_genesisBlockReward != 0) {
-		baseReward = m_genesisBlockReward;
-		std::cout << "Genesis block reward: " << baseReward << std::endl;
+	uint64_t fee, uint64_t& reward, int64_t& emissionChange) const {	
+	//after 3 years or 3b coins
+	//TODO add time limit to first block emission
+	if(alreadyGeneratedCoins > 3000000000000) {
+		reward = 3000000000000 / (7 * 365 * 24 * 60); //7 years for 3b coins 
+	} else {
+		reward = 1500000000 / (365 * 3); //3 years for 1.5b coins + BONUS	
 	}
-	if (baseReward < m_tailEmissionReward) {
-		baseReward = m_tailEmissionReward;
-	}
-
-	if (alreadyGeneratedCoins + baseReward >= m_moneySupply) {
-		baseReward = 0;
-	}
-
-	size_t blockGrantedFullRewardZone = blockGrantedFullRewardZoneByBlockVersion(blockMajorVersion);
-	medianSize = std::max(medianSize, blockGrantedFullRewardZone);
-	if (currentBlockSize > UINT64_C(2) * medianSize) {
-		logger(TRACE) << "Block cumulative size is too big: " << currentBlockSize << ", expected less than " << 2 * medianSize;
-		return false;
-	}
-
-	uint64_t penalizedBaseReward = getPenalizedAmount(baseReward, medianSize, currentBlockSize);
-	uint64_t penalizedFee = blockMajorVersion >= BLOCK_MAJOR_VERSION_2 ? getPenalizedAmount(fee, medianSize, currentBlockSize) : fee;
-	if (cryptonoteCoinVersion() == 1) {
-		penalizedFee = getPenalizedAmount(fee, medianSize, currentBlockSize);
-	}
-
-	emissionChange = penalizedBaseReward - (fee - penalizedFee);
-	reward = penalizedBaseReward + penalizedFee;
-	//fee = 0;*/
-	reward = 1500000000 / (365 * 3); //3 years for 1.5b coins
+	
 	emissionChange = reward;
 
 	return true;
