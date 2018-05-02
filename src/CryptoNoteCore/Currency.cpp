@@ -186,10 +186,12 @@ bool Currency::getBlockReward(uint8_t blockMajorVersion, size_t medianSize, size
 	uint64_t fee, uint64_t& reward, int64_t& emissionChange) const {	
 	//after 3 years or 3b coins
 	//TODO add time limit to first block emission
-	if(alreadyGeneratedCoins > 3000000000000) {
+	if(alreadyGeneratedCoins > 3000000000000 || std::time(nullptr) > 1619874200) {
 		reward = 3000000000000 / (7 * 365 * 24 * 60); //7 years for 3b coins 
+	} else if(alreadyGeneratedCoins > 2000000000000 || std::time(nullptr) > 1543669400) { 
+		reward = 1500000000000 / (3* 365 * 24 * 60); //normal reward for the last two years
 	} else {
-		reward = 1500000000 / (365 * 3); //3 years for 1.5b coins + BONUS	
+		reward = 1500000000 / (365 * 3); //BONUS REWARD for the first year
 	}
 	
 	emissionChange = reward;
