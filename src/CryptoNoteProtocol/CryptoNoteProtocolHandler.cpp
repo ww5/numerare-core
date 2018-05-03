@@ -365,8 +365,12 @@ int CryptoNoteProtocolHandler::handle_notify_new_transactions(int command, NOTIF
     return 1;
 
   for (auto tx_blob_it = arg.txs.begin(); tx_blob_it != arg.txs.end();) {
-    if (!m_core.addTransactionToPool(*tx_blob_it)) {
-      logger(Logging::INFO) << context << "Tx verification failed";
+	bool check = m_core.addTransactionToPool(*tx_blob_it);
+    if (!check) {
+	  if(check != NULL) {
+		logger(Logging::INFO) << context << "Tx verification failed";
+	  }
+	  
       tx_blob_it = arg.txs.erase(tx_blob_it);
     } else {
       ++tx_blob_it;
