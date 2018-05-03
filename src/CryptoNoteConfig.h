@@ -158,7 +158,7 @@ namespace CryptoNote {
 
 	const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "";
 
-	const char* const SEED_NODES[] = { "pl.seed.numerare.org:19131" };
+	const char* const SEED_NODES[] = {};
 
 	struct CheckpointData {
 	  uint32_t index;
