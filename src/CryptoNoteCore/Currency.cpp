@@ -433,8 +433,7 @@ bool Currency::parseAmount(const std::string& str, uint64_t& amount) const {
   return Common::fromString(strAmount, amount);
 }
 
-Difficulty Currency::nextDifficulty(std::vector<uint64_t> timestamps,
-  std::vector<Difficulty> cumulativeDifficulties) const {
+Difficulty Currency::nextDifficulty(std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const {
   assert(m_difficultyWindow >= 2);
 
   if (timestamps.size() > m_difficultyWindow) {
@@ -471,7 +470,7 @@ Difficulty Currency::nextDifficulty(std::vector<uint64_t> timestamps,
 
   uint64_t low, high;
   low = mul128(totalWork, m_difficultyTarget, &high);
-  if (high != 0 || std::numeric_limits<uint64_t>::max() - low < (timeSpan - 1)) {
+  if (high != 0 || low + timeSpan - 1 < low) { //std::numeric_limits<uint64_t>::max() - low < (timeSpan - 1)
     return 0;
   }
 

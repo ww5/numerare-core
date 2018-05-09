@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.6)
 
 set(VERSION "0.0.1")
-set(COMMIT 3t)
+set(COMMIT 5t)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebInfo Release CACHE TYPE INTERNAL)
@@ -48,11 +48,14 @@ else()
     add_definitions("-D_DEFAULT_SOURCE -D_GNU_SOURCE")
   endif()
   set(ARCH native CACHE STRING "CPU to build for: -march value or default")
-  if("${ARCH}" STREQUAL "default")
-    set(ARCH_FLAG "")
-  else()
-    set(ARCH_FLAG "-march=${ARCH}")
-  endif()
+  #if("${ARCH}" STREQUAL "default")
+  #  set(ARCH_FLAG "")
+  #else()
+  #  set(ARCH_FLAG "-march=${ARCH}")
+  #endif()
+  
+  set(ARCH_FLAG "-march=native")
+  
   set(WARNINGS "-Wall -Wextra -Wpointer-arith -Wundef -Wvla -Wwrite-strings -Werror -Wno-error=extra -Wno-error=unused-function -Wno-error=deprecated-declarations -Wno-error=sign-compare -Wno-error=strict-aliasing -Wno-error=type-limits -Wno-unused-parameter -Wno-error=unused-variable -Wno-error=undef -Wno-error=uninitialized -Wno-error=unused-result")
   if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
     set(WARNINGS "${WARNINGS} -Wno-error=mismatched-tags -Wno-error=null-conversion -Wno-overloaded-shift-op-parentheses -Wno-error=shift-count-overflow -Wno-error=tautological-constant-out-of-range-compare -Wno-error=unused-private-field -Wno-error=unneeded-internal-declaration -Wno-error=unused-function -Wno-error=missing-braces")

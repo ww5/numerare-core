@@ -40,8 +40,10 @@ inline uint32_t Mask(uint32_t crc) {
 
 // Return the crc whose masked representation is masked_crc.
 inline uint32_t Unmask(uint32_t masked_crc) {
-  uint32_t rot = masked_crc - kMaskDelta;
-  return ((rot >> 17) | (rot << 15));
+	try {
+	  uint32_t rot = masked_crc - kMaskDelta;
+	  return ((rot >> 17) | (rot << 15));
+	} catch(...) {}
 }
 
 }  // namespace crc32c

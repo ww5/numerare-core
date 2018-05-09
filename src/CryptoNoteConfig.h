@@ -158,7 +158,7 @@ namespace CryptoNote {
 
 	const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "";
 
-	const char* const SEED_NODES[] = {};
+	const char* const SEED_NODES[] = {""};
 
 	struct CheckpointData {
 	  uint32_t index;
@@ -166,7 +166,8 @@ namespace CryptoNote {
 	};
 
 	const std::initializer_list<CheckpointData> CHECKPOINTS = {
-	  {0, "3992958c861c2f8c7266b16f548411ac0c28f8331ccd9bb3bc96d65302d03b22"}
+	  {0, "3992958c861c2f8c7266b16f548411ac0c28f8331ccd9bb3bc96d65302d03b22"},
+	  {10000, "4b5839af7bae1ca0f0d532d987e2a291051cc282040461c1ac316418574100e5"}
 	};
 } // CryptoNote
 

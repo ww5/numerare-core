@@ -88,17 +88,15 @@ void Miner::runWorkers(BlockMiningParameters blockMiningParameters, size_t threa
   m_logger(Logging::INFO) << "Starting mining for difficulty " << blockMiningParameters.difficulty;
 
   try {
-    blockMiningParameters.blockTemplate.nonce = 0;//Crypto::rand<uint32_t>();
-	//int nonce = 100 * threadCount;
-	
-	//std::cout << blockMiningParameters.height << std::endl;
-    
-	for (size_t i = 0; i < threadCount; ++i) {
+	blockMiningParameters.blockTemplate.nonce = 0;//Crypto::rand<uint32_t>();  
+	  
+    for (size_t i = 0; i < threadCount; ++i) {
       m_workers.emplace_back(std::unique_ptr<System::RemoteContext<void>> (
         new System::RemoteContext<void>(m_dispatcher, std::bind(&Miner::workerFunc, this, blockMiningParameters.blockTemplate, blockMiningParameters.difficulty, threadCount)))
       );
 
-      blockMiningParameters.blockTemplate.nonce++; //+= nonce;
+      //blockMiningParameters.blockTemplate.nonce++;
+	  blockMiningParameters.blockTemplate.nonce = Crypto::rand<uint32_t>();
     }
 
     m_workers.clear();
@@ -131,7 +129,9 @@ void Miner::workerFunc(const BlockTemplate& blockTemplate, Difficulty difficulty
         return;
       }
 	  	  
-      block.nonce = Crypto::rand<uint32_t>();//+= nonceStep;
+      //block.nonce += nonceStep;
+	  //block.nonce++;
+	  block.nonce = Crypto::rand<uint32_t>();
     }
   } catch (std::exception& e) {
     m_logger(Logging::ERROR) << "Miner got error: " << e.what();
