@@ -1,4 +1,4 @@
-# update Ubuntu's repository
+# update repository
 sudo apt update
 
 # install git 
