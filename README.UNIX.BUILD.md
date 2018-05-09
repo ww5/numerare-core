@@ -9,4 +9,5 @@ sudo apt install build-essential cmake libboost-all-dev miniupnpc libunbound-dev
 
 # build
 make clean
+
 make 
