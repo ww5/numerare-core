@@ -135,19 +135,17 @@ class ConcurrentArena : public Allocator {
     // with no waiting.  This keeps the fragmentation penalty of
     // concurrency zero unless it might actually confer an advantage.
     std::unique_lock<SpinMutex> arena_lock(arena_mutex_, std::defer_lock);
-	try {
-		if (bytes > shard_block_size_ / 4 || force_arena ||
-			((cpu = tls_cpuid) == 0 &&
-			 !shards_[0].allocated_and_unused_.load(std::memory_order_relaxed) &&
-			 arena_lock.try_lock())) {
-		  if (!arena_lock.owns_lock()) {
-			arena_lock.lock();
-		  }
-		  auto rv = func();
-		  Fixup();
-		  return rv;
-		}
-	} catch(...) {}
+    if (bytes > shard_block_size_ / 4 || force_arena ||
+        ((cpu = tls_cpuid) == 0 &&
+         !shards_[0].allocated_and_unused_.load(std::memory_order_relaxed) &&
+         arena_lock.try_lock())) {
+      if (!arena_lock.owns_lock()) {
+        arena_lock.lock();
+      }
+      auto rv = func();
+      Fixup();
+      return rv;
+    }
 
     // pick a shard from which to allocate
     Shard* s = &shards_[cpu & index_mask_];

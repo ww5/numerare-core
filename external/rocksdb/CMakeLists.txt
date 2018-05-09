@@ -49,7 +49,6 @@ endif()
 string(REGEX REPLACE "[^0-9a-f]+" "" GIT_SHA "${GIT_SHA}")
 
 set(BUILD_VERSION_CC ${CMAKE_CURRENT_SOURCE_DIR}/util/build_version.cc)
-set(ARCH_FLAG "-march=native")
 
 add_custom_command(OUTPUT ${BUILD_VERSION_CC}
     COMMAND echo "#include \"build_version.h\"" > ${BUILD_VERSION_CC}

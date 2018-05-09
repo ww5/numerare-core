@@ -521,12 +521,9 @@ class LRUCache : public ShardedCache {
   LRUCache(size_t capacity, int num_shard_bits, bool strict_capacity_limit)
       : ShardedCache(capacity, num_shard_bits, strict_capacity_limit) {
     int num_shards = 1 << num_shard_bits;
-	try {
-		shards_ = new LRUCacheShard[num_shards];
-		SetCapacity(capacity);
-		SetStrictCapacityLimit(strict_capacity_limit);
-	} 
-	catch(...) {}
+    shards_ = new LRUCacheShard[num_shards];
+    SetCapacity(capacity);
+    SetStrictCapacityLimit(strict_capacity_limit);
   }
 
   virtual ~LRUCache() { delete[] shards_; }

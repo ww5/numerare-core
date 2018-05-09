@@ -120,9 +120,7 @@ Status Writer::EmitPhysicalRecord(RecordType t, const char* ptr, size_t n) {
   // Compute the crc of the record type and the payload.
   crc = crc32c::Extend(crc, ptr, n);
   crc = crc32c::Mask(crc);  // Adjust for storage
-  try {
-	EncodeFixed32(buf, crc);
-  } catch(...) {}
+  EncodeFixed32(buf, crc);
 
   // Write the header and the payload
   Status s = dest_->Append(Slice(buf, header_size));

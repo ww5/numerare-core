@@ -20,15 +20,13 @@ ShardedCache::ShardedCache(size_t capacity, int num_shard_bits,
       last_id_(1) {}
 
 void ShardedCache::SetCapacity(size_t capacity) {
-	try {
-	  int num_shards = 1 << num_shard_bits_;
-	  const size_t per_shard = (capacity + (num_shards - 1)) / num_shards;
-	  MutexLock l(&capacity_mutex_);
-	  for (int s = 0; s < num_shards; s++) {
-		GetShard(s)->SetCapacity(per_shard);
-	  }
-	  capacity_ = capacity;
-	} catch(...) {}
+  int num_shards = 1 << num_shard_bits_;
+  const size_t per_shard = (capacity + (num_shards - 1)) / num_shards;
+  MutexLock l(&capacity_mutex_);
+  for (int s = 0; s < num_shards; s++) {
+    GetShard(s)->SetCapacity(per_shard);
+  }
+  capacity_ = capacity;
 }
 
 void ShardedCache::SetStrictCapacityLimit(bool strict_capacity_limit) {
