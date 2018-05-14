@@ -50,8 +50,6 @@ Miner::~Miner() {
 BlockTemplate Miner::mine(const BlockMiningParameters& blockMiningParameters, size_t threadCount) {
   if (threadCount == 0) {
     throw std::runtime_error("Miner requires at least one thread");
-  } else if (threadCount > 3) {
-	throw std::runtime_error("THIS PHASE ALLOW ONLY 3 THREAD");
   }
 
   if (m_state == MiningState::MINING_IN_PROGRESS) {
@@ -88,15 +86,14 @@ void Miner::runWorkers(BlockMiningParameters blockMiningParameters, size_t threa
   m_logger(Logging::INFO) << "Starting mining for difficulty " << blockMiningParameters.difficulty;
 
   try {
-	blockMiningParameters.blockTemplate.nonce = 0;//Crypto::rand<uint32_t>();  
+	blockMiningParameters.blockTemplate.nonce = Crypto::rand<uint32_t>();  
 	  
     for (size_t i = 0; i < threadCount; ++i) {
       m_workers.emplace_back(std::unique_ptr<System::RemoteContext<void>> (
         new System::RemoteContext<void>(m_dispatcher, std::bind(&Miner::workerFunc, this, blockMiningParameters.blockTemplate, blockMiningParameters.difficulty, threadCount)))
       );
 
-      //blockMiningParameters.blockTemplate.nonce++;
-	  blockMiningParameters.blockTemplate.nonce = Crypto::rand<uint32_t>();
+      blockMiningParameters.blockTemplate.nonce++;
     }
 
     m_workers.clear();
@@ -129,9 +126,7 @@ void Miner::workerFunc(const BlockTemplate& blockTemplate, Difficulty difficulty
         return;
       }
 	  	  
-      //block.nonce += nonceStep;
-	  //block.nonce++;
-	  block.nonce = Crypto::rand<uint32_t>();
+      block.nonce += nonceStep;
     }
   } catch (std::exception& e) {
     m_logger(Logging::ERROR) << "Miner got error: " << e.what();

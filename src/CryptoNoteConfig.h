@@ -156,7 +156,7 @@ namespace CryptoNote {
 	const uint32_t  P2P_IP_FAILS_BEFORE_BLOCK                    = 10;
 	const uint32_t  P2P_IDLE_CONNECTION_KILL_INTERVAL            = (5 * 60); //5 minutes
 
-	const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "";
+	const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "2996a7a2a6fa63ee86768513635ba2c820bcc7a550521819228d675840e08624";
 
 	const char* const SEED_NODES[] = {""};
 
@@ -167,7 +167,10 @@ namespace CryptoNote {
 
 	const std::initializer_list<CheckpointData> CHECKPOINTS = {
 	  {0, "3992958c861c2f8c7266b16f548411ac0c28f8331ccd9bb3bc96d65302d03b22"},
-	  {10000, "4b5839af7bae1ca0f0d532d987e2a291051cc282040461c1ac316418574100e5"}
+	  {9, "05db78aee53b6806c88495609698935f98641822c2f9b5e9ef42ab936a5bc8ff"},
+	  {999, "03a7b70d6c432bda50d21c4414534d9c262ccba9fe59eeb16c16a63478ee4bce"},
+	  {4999, "e041b036296552f99036e52c19cca9d4a5819993a1ffb1878d1b335fa3b80bc1"},
+	  {9999, "4b5839af7bae1ca0f0d532d987e2a291051cc282040461c1ac316418574100e5"}
 	};
 } // CryptoNote
 
