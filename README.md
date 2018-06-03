@@ -1,13 +1,14 @@
 # NUMERARE
 
 Copyright (c) 2018 NUMERARE
+
 Portions Copyright (c) 2012-2013 The Cryptonote developers and 2014-2018 The Monero Project.
 
 ## Development resources
 
 - Web: [numerare.org](https://numerare.org)
 - Explorer: [explorer.numerare.org](https://explorer.numerare.org)
-- Discord: [Discord LINK](https://discord.gg/qg89krU)
+- Discord: [discord.gg/qg89krU](https://discord.gg/qg89krU)
 
 ## About this project
 
