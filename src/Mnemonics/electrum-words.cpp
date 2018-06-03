@@ -1,30 +1,29 @@
-// Copyright (c) 2014-2018, The Monero Project
-// 
-// All rights reserved.
-// 
-// Redistribution and use in source and binary forms, with or without modification, are
-// permitted provided that the following conditions are met:
-// 
-// 1. Redistributions of source code must retain the above copyright notice, this list of
-//    conditions and the following disclaimer.
-// 
-// 2. Redistributions in binary form must reproduce the above copyright notice, this list
-//    of conditions and the following disclaimer in the documentation and/or other
-//    materials provided with the distribution.
-// 
-// 3. Neither the name of the copyright holder nor the names of its contributors may be
-//    used to endorse or promote products derived from this software without specific
-//    prior written permission.
-// 
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
-// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
-// THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
-// THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/***
+	MIT License
+
+	Copyright (c) 2018 NUMERARE
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+
+	Parts of this file are originally Copyright (c) 2012-2014 The CryptoNote developers,
+	                                                2014-2018 The Monero Project
+***/
 
 /*!
  * \file electrum-words.cpp
@@ -45,7 +44,7 @@
 #include <boost/algorithm/string.hpp>
 #include "crypto/crypto.h"  // for declaration of crypto::secret_key
 #include <fstream>
-#include "Mnemonics/electrum-words.h"
+#include "mnemonics/electrum-words.h"
 #include <stdexcept>
 #include <boost/filesystem.hpp>
 #include <boost/crc.hpp>
@@ -327,7 +326,7 @@ namespace crypto
      * \param  language_name   Language of the seed as found gets written here.
      * \return                 false if not a multiple of 3 words, or if word is not in the words list
      */
-    bool words_to_bytes(std::string words, Crypto::SecretKey& dst,
+    bool words_to_bytes(std::string words, crypto::secret_key& dst,
       std::string &language_name)
     {
       std::string s;
@@ -335,7 +334,7 @@ namespace crypto
         return false;
       if (s.size() != sizeof(dst))
         return false;
-      dst = *(const Crypto::SecretKey*)s.data();
+      dst = *(const crypto::secret_key*)s.data();
       return true;
     }
 
@@ -439,19 +438,15 @@ namespace crypto
       return true;
     }
 
-    bool bytes_to_words(const Crypto::SecretKey& src, std::string& words,
+    bool bytes_to_words(const crypto::secret_key& src, std::string& words,
       const std::string &language_name)
     {
-      return bytes_to_words(reinterpret_cast<const char*>(src.data), sizeof(src), words, language_name);
+      return bytes_to_words(src.data, sizeof(src), words, language_name);
     }
 
-    /*!
-     * \brief Gets a list of seed languages that are supported.
-     * \param languages The vector is set to the list of languages.
-     */
-    void get_language_list(std::vector<std::string> &languages)
+    std::vector<const Language::Base*> get_language_list()
     {
-      std::vector<Language::Base*> language_instances({
+      static const std::vector<const Language::Base*> language_instances({
         Language::Singleton<Language::German>::instance(),
         Language::Singleton<Language::English>::instance(),
         Language::Singleton<Language::Spanish>::instance(),
@@ -465,10 +460,20 @@ namespace crypto
         Language::Singleton<Language::Esperanto>::instance(),
         Language::Singleton<Language::Lojban>::instance()
       });
-      for (std::vector<Language::Base*>::iterator it = language_instances.begin();
+      return language_instances;
+    }
+
+    /*!
+     * \brief Gets a list of seed languages that are supported.
+     * \param languages The vector is set to the list of languages.
+     */
+    void get_language_list(std::vector<std::string> &languages, bool english)
+    {
+      const std::vector<const Language::Base*> language_instances = get_language_list();
+      for (std::vector<const Language::Base*>::const_iterator it = language_instances.begin();
         it != language_instances.end(); it++)
       {
-        languages.push_back((*it)->get_language_name());
+        languages.push_back(english ? (*it)->get_english_language_name() : (*it)->get_language_name());
       }
     }
 
@@ -483,6 +488,18 @@ namespace crypto
       boost::algorithm::trim(seed);
       boost::split(word_list, seed, boost::is_any_of(" "), boost::token_compress_on);
       return word_list.size() != (seed_length + 1);
+    }
+
+    std::string get_english_name_for(const std::string &name)
+    {
+      const std::vector<const Language::Base*> language_instances = get_language_list();
+      for (std::vector<const Language::Base*>::const_iterator it = language_instances.begin();
+        it != language_instances.end(); it++)
+      {
+        if ((*it)->get_language_name() == name)
+          return (*it)->get_english_language_name();
+      }
+      return "<language not found>";
     }
 
   }

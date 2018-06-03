@@ -21,10 +21,11 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 
-	Parts of this file are originally Copyright (c) 2012-2017 The CryptoNote developers, The Bytecoin developers
+	Parts of this file are originally Copyright (c) 2012-2014 The CryptoNote developers,
+	                                                2014-2018 The Monero Project
 ***/
 
-#include "Base58.h"
+#include "base58.h"
 
 #include <assert.h>
 #include <string>
@@ -32,11 +33,12 @@
 
 #include "crypto/hash.h"
 #include "int-util.h"
-#include "Varint.h"
+#include "util.h"
+#include "varint.h"
 
-namespace Tools
+namespace tools
 {
-  namespace Base58
+  namespace base58
   {
     namespace
     {
@@ -106,13 +108,13 @@ namespace Tools
         uint64_t res = 0;
         switch (9 - size)
         {
-        case 1:            res |= *data++;
-        case 2: res <<= 8; res |= *data++;
-        case 3: res <<= 8; res |= *data++;
-        case 4: res <<= 8; res |= *data++;
-        case 5: res <<= 8; res |= *data++;
-        case 6: res <<= 8; res |= *data++;
-        case 7: res <<= 8; res |= *data++;
+        case 1:            res |= *data++; /* FALLTHRU */
+        case 2: res <<= 8; res |= *data++; /* FALLTHRU */
+        case 3: res <<= 8; res |= *data++; /* FALLTHRU */
+        case 4: res <<= 8; res |= *data++; /* FALLTHRU */
+        case 5: res <<= 8; res |= *data++; /* FALLTHRU */
+        case 6: res <<= 8; res |= *data++; /* FALLTHRU */
+        case 7: res <<= 8; res |= *data++; /* FALLTHRU */
         case 8: res <<= 8; res |= *data; break;
         default: assert(false);
         }
@@ -236,7 +238,7 @@ namespace Tools
     {
       std::string buf = get_varint_data(tag);
       buf += data;
-      Crypto::Hash hash = Crypto::cn_fast_hash(buf.data(), buf.size());
+      crypto::hash hash = crypto::cn_fast_hash(buf.data(), buf.size());
       const char* hash_data = reinterpret_cast<const char*>(&hash);
       buf.append(hash_data, addr_checksum_size);
       return encode(buf);
@@ -253,11 +255,11 @@ namespace Tools
       checksum = addr_data.substr(addr_data.size() - addr_checksum_size);
 
       addr_data.resize(addr_data.size() - addr_checksum_size);
-      Crypto::Hash hash = Crypto::cn_fast_hash(addr_data.data(), addr_data.size());
+      crypto::hash hash = crypto::cn_fast_hash(addr_data.data(), addr_data.size());
       std::string expected_checksum(reinterpret_cast<const char*>(&hash), addr_checksum_size);
       if (expected_checksum != checksum) return false;
 
-      int read = Tools::read_varint(addr_data.begin(), addr_data.end(), tag);
+      int read = tools::read_varint(addr_data.begin(), addr_data.end(), tag);
       if (read <= 0) return false;
 
       data = addr_data.substr(read);

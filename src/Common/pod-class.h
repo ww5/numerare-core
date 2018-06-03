@@ -21,13 +21,20 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 
-	Parts of this file are originally Copyright (c) 2012-2017 The CryptoNote developers, The Bytecoin developers
+	Parts of this file are originally Copyright (c) 2012-2014 The CryptoNote developers,
+	                                                2014-2018 The Monero Project
 ***/
 
 #pragma once
 
+// FIXME: Why is this ifdef needed?  Hopefully making it struct won't break things.
+
+/*
 #if defined(_MSC_VER)
 #define POD_CLASS struct
 #else
 #define POD_CLASS class
 #endif
+*/
+
+#define POD_CLASS struct

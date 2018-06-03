@@ -21,11 +21,10 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 
-	Parts of this file are originally Copyright (c) 2012-2017 The CryptoNote developers, The Bytecoin developers
+	Parts of this file are originally Copyright (c) 2012-2014 The CryptoNote developers,
+	                                                2014-2018 The Monero Project
 ***/
 
 #pragma once
 
-#ifndef __cplusplus
 #define alloca(size) _alloca(size)
-#endif

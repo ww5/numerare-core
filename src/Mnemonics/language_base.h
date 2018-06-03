@@ -38,7 +38,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
-//#include "misc_log_ex.h"
+#include "misc_log_ex.h"
 
 /*!
  * \namespace Language
@@ -82,6 +82,7 @@ namespace Language
     std::unordered_map<std::string, uint32_t> word_map; /*!< hash table to find word's index */
     std::unordered_map<std::string, uint32_t> trimmed_word_map; /*!< hash table to find word's trimmed index */
     std::string language_name; /*!< Name of language */
+    std::string english_language_name; /*!< Name of language */
     uint32_t unique_prefix_length; /*!< Number of unique starting characters to trim the wordlist to when matching */
     /*!
      * \brief Populates the word maps after the list is ready.
@@ -98,9 +99,7 @@ namespace Language
         if ((*it).size() < unique_prefix_length)
         {
           if (flags & ALLOW_SHORT_WORDS)
-          {
-            //MWARNING(language_name << " word '" << *it << "' is shorter than its prefix length, " << unique_prefix_length);
-          }
+            MWARNING(language_name << " word '" << *it << "' is shorter than its prefix length, " << unique_prefix_length);
           else
             throw std::runtime_error("Too short word in " + language_name + " word list: " + *it);
         }
@@ -116,9 +115,7 @@ namespace Language
         if (trimmed_word_map.find(trimmed) != trimmed_word_map.end())
         {
           if (flags & ALLOW_DUPLICATE_PREFIXES)
-          {
-            //MWARNING("Duplicate prefix in " << language_name << " word list: " << trimmed);
-          }
+            MWARNING("Duplicate prefix in " << language_name << " word list: " << trimmed);
           else
             throw std::runtime_error("Duplicate prefix in " + language_name + " word list: " + trimmed);
         }
@@ -126,10 +123,11 @@ namespace Language
       }
     }
   public:
-    Base(const char *language_name, const std::vector<std::string> &words, uint32_t prefix_length):
+    Base(const char *language_name, const char *english_language_name, const std::vector<std::string> &words, uint32_t prefix_length):
       word_list(words),
       unique_prefix_length(prefix_length),
-      language_name(language_name)
+      language_name(language_name),
+      english_language_name(english_language_name)
     {
     }
     virtual ~Base()
@@ -166,6 +164,14 @@ namespace Language
     const std::string &get_language_name() const
     {
       return language_name;
+    }
+    /*!
+     * \brief Returns the name of the language in English.
+     * \return Name of the language.
+     */
+    const std::string &get_english_language_name() const
+    {
+      return english_language_name;
     }
     /*!
      * \brief Returns the number of unique starting characters to be used for matching.
