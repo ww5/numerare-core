@@ -1,5 +1,0 @@
-Release notes 0.0.1
-  1t Fork from forknote
-  2t windows build
-  3t added coins block
-  4t check tx code
