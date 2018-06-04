@@ -94,9 +94,9 @@ invokes cmake commands as needed.
 
 * The resulting executables can be found in `build/release/bin`
 
-* Add `PATH="$PATH:$HOME/monero/build/release/bin"` to `.profile`
+* Add `PATH="$PATH:$HOME/numerare-core/build/release/bin"` to `.profile`
 
-* Run Monero with `monerod --detach`
+* Run Monero with `node --detach`
 
 * **Optional**: build and run the test suite to verify the binaries:
 
