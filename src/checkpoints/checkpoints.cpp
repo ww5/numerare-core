@@ -1,29 +1,32 @@
-/***
-	MIT License
-
-	Copyright (c) 2018 NUMERARE
-
-	Permission is hereby granted, free of charge, to any person obtaining a copy
-	of this software and associated documentation files (the "Software"), to deal
-	in the Software without restriction, including without limitation the rights
-	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-	copies of the Software, and to permit persons to whom the Software is
-	furnished to do so, subject to the following conditions:
-
-	The above copyright notice and this permission notice shall be included in all
-	copies or substantial portions of the Software.
-
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-	SOFTWARE.
-
-	Parts of this file are originally Copyright (c) 2012-2014 The CryptoNote developers,
-	                                                2014-2018 The Monero Project
-***/
+// Copyright (c) 2014-2018, The Monero Project
+//
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification, are
+// permitted provided that the following conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright notice, this list of
+//    conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list
+//    of conditions and the following disclaimer in the documentation and/or other
+//    materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its contributors may be
+//    used to endorse or promote products derived from this software without specific
+//    prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+// THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+// THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Parts of this file are originally copyright (c) 2012-2013 The Cryptonote developers
 
 #include "include_base_utils.h"
 
@@ -166,15 +169,22 @@ namespace cryptonote
     {
       return true;
     }
-    ADD_CHECKPOINT(   0,     "090d67be93129c60ac8544e5ffa441ec8513201701d49f0dc9753ac6a621974f");
-    ADD_CHECKPOINT(   3,     "a9f2b6bee74e41c14d3f4266e6239ee97c88f70d23062b2049c8fc74fe86dbc4");
-    ADD_CHECKPOINT(   9,     "fe186907732357a4a8c6a92911dba93ec3e5fd5555a5a32206707c8200d3ffd0");
-    ADD_CHECKPOINT(  33,     "1bd71e207c7c097b2a08f0622d0a2331fb67436ee06fb332667bc9ff8c54c51c");
-    ADD_CHECKPOINT(  91,     "273e198d01392765bb79fac8ffed2c28094f65ada9d16b66f6c16040b6a32cd5");
-    ADD_CHECKPOINT( 499,     "f91e1bee0299abb982d747bf4e24bfe4963a8280a1003022929d28fbd3adf861");
-    ADD_CHECKPOINT( 913,     "97e827ae6168481b6264c5527d95a47ecd0cb7a4cdfa0b39c7198d000b5a7bca");
-    ADD_CHECKPOINT(1500,     "1664303ac7bff69f64499f068b521dbbd8529c451c7d5b2c10b6f1cad6def4d9");
-    ADD_CHECKPOINT(1991,     "1a232a4973342fbfc97d8caf71063adff0bfca3ab66dde77a43e43b464c4b4b1");
+    ADD_CHECKPOINT(    0,     "090d67be93129c60ac8544e5ffa441ec8513201701d49f0dc9753ac6a621974f");
+    ADD_CHECKPOINT(    3,     "a9f2b6bee74e41c14d3f4266e6239ee97c88f70d23062b2049c8fc74fe86dbc4");
+    ADD_CHECKPOINT(    9,     "fe186907732357a4a8c6a92911dba93ec3e5fd5555a5a32206707c8200d3ffd0");
+    ADD_CHECKPOINT(   33,     "1bd71e207c7c097b2a08f0622d0a2331fb67436ee06fb332667bc9ff8c54c51c");
+    ADD_CHECKPOINT(   91,     "273e198d01392765bb79fac8ffed2c28094f65ada9d16b66f6c16040b6a32cd5");
+    ADD_CHECKPOINT(  499,     "f91e1bee0299abb982d747bf4e24bfe4963a8280a1003022929d28fbd3adf861");
+    ADD_CHECKPOINT(  913,     "97e827ae6168481b6264c5527d95a47ecd0cb7a4cdfa0b39c7198d000b5a7bca");
+    ADD_CHECKPOINT( 1500,     "1664303ac7bff69f64499f068b521dbbd8529c451c7d5b2c10b6f1cad6def4d9");
+    ADD_CHECKPOINT( 1991,     "1a232a4973342fbfc97d8caf71063adff0bfca3ab66dde77a43e43b464c4b4b1");
+    ADD_CHECKPOINT( 3982,     "eed4e341e070c9fbfed19008254b1262020435298d6bffe62b70494912be7bac");
+    ADD_CHECKPOINT( 5973,     "ae01682050204a201a140b0b6ad42898cc3b3af0840c954b8cedecf45d8dcac8");
+    ADD_CHECKPOINT( 7964,     "67505d8a80b6945a89492b3e1633c52eda1dfc66fe60fdb1d4c0d31ade9d4ce9");
+    ADD_CHECKPOINT( 9955,     "6d5984df6f01e5113352d6269f9aee5635a9c4fc34454bd0e93c76a98baa7c57");
+    ADD_CHECKPOINT(11946,     "32be1cd260c4773d72adb06b61cc405249b56c9916f050534c6ea5f3f8436b06");
+    ADD_CHECKPOINT(13913,     "385c813981d56719508d9d652a96543ddc394a09b7c2bb8fa4e14af216346936");
+    ADD_CHECKPOINT(15928,     "aa853dc272efbadecf03249e78e5d48f3f2d2fbbe1ffec7531d429ad58f52269");
     
     return true;
   }
