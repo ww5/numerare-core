@@ -73,7 +73,7 @@ If you already have a repo cloned, initialize and update:
 
 ### Build instructions
 
-Monero uses the CMake build system and a top-level [Makefile](Makefile) that
+NUMERARE uses the CMake build system and a top-level [Makefile](Makefile) that
 invokes cmake commands as needed.
 
 #### On Linux and OS X
@@ -96,7 +96,7 @@ invokes cmake commands as needed.
 
 * Add `PATH="$PATH:$HOME/numerare-core/build/release/bin"` to `.profile`
 
-* Run Monero with `node --detach`
+* Run NUMERARE with `node --detach`
 
 * **Optional**: build and run the test suite to verify the binaries:
 
