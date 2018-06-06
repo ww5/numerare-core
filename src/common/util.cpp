@@ -53,6 +53,7 @@ using namespace epee;
   #include <sys/file.h>
   #include <sys/utsname.h>
   #include <sys/stat.h>
+  #include <unistd.h>
 #endif
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
@@ -459,15 +460,24 @@ std::string get_nix_version_display_string()
     std::string config_folder;
 
 #ifdef WIN32
-    config_folder = get_special_folder_path(CSIDL_COMMON_APPDATA, true) + "\\" + CRYPTONOTE_NAME;
+    char selfdir[MAX_PATH] = {0}; 
+    GetModuleFileNameA(NULL, selfdir, MAX_PATH);
+
+    std::string folder(selfdir);
+    folder = folder.substr(0, folder.rfind("\\") + 1);	
+    
+    config_folder = folder + "data";
+    //config_folder = get_special_folder_path(CSIDL_COMMON_APPDATA, true) + "\\" + CRYPTONOTE_NAME;
 #else
-    std::string pathRet;
+    /*std::string pathRet;
     char* pszHome = getenv("HOME");
     if (pszHome == NULL || strlen(pszHome) == 0)
       pathRet = "/";
     else
       pathRet = pszHome;
-    config_folder = (pathRet + "/." + CRYPTONOTE_NAME);
+    config_folder = (pathRet + "/." + CRYPTONOTE_NAME);*/
+    std::string folder = get_current_dir_name();
+	  config_folder =  folder + "/data";
 #endif
 
     return config_folder;

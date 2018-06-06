@@ -1,32 +1,29 @@
-// Copyright (c) 2014-2018, The Monero Project
-//
-// All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without modification, are
-// permitted provided that the following conditions are met:
-//
-// 1. Redistributions of source code must retain the above copyright notice, this list of
-//    conditions and the following disclaimer.
-//
-// 2. Redistributions in binary form must reproduce the above copyright notice, this list
-//    of conditions and the following disclaimer in the documentation and/or other
-//    materials provided with the distribution.
-//
-// 3. Neither the name of the copyright holder nor the names of its contributors may be
-//    used to endorse or promote products derived from this software without specific
-//    prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
-// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
-// THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
-// THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Parts of this file are originally copyright (c) 2012-2013 The Cryptonote developers
+/***
+	MIT License
+
+	Copyright (c) 2018 NUMERARE
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+
+	Parts of this file are originally Copyright (c) 2012-2014 The CryptoNote developers,
+	                                                2014-2018 The Monero Project
+***/
 
 #include "include_base_utils.h"
 
@@ -184,8 +181,9 @@ namespace cryptonote
     ADD_CHECKPOINT( 9955,     "6d5984df6f01e5113352d6269f9aee5635a9c4fc34454bd0e93c76a98baa7c57");
     ADD_CHECKPOINT(11946,     "32be1cd260c4773d72adb06b61cc405249b56c9916f050534c6ea5f3f8436b06");
     ADD_CHECKPOINT(13913,     "385c813981d56719508d9d652a96543ddc394a09b7c2bb8fa4e14af216346936");
-    ADD_CHECKPOINT(15928,     "aa853dc272efbadecf03249e78e5d48f3f2d2fbbe1ffec7531d429ad58f52269");
+    ADD_CHECKPOINT(15928,     "aa853dc272efbadecf03249e78e5d48f3f2d2fbbe1ffec7531d429ad58f52269");    
     ADD_CHECKPOINT(17919,     "6aec7c34c712f8bd1ed27954e6d93e2378c5d60d0dad74997b4ca8a8c7227bb7");
+    ADD_CHECKPOINT(19913,     "6e7a7eeaf3d12de96c0317876e04aa0c2818cca626be64b0381a422a4f5dff24");
     
     return true;
   }

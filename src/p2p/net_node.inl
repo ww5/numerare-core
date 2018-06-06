@@ -374,7 +374,8 @@ namespace nodetool
     }
     else
     {
-      full_addrs.insert("127.0.0.1:13913");
+      full_addrs.insert("pl.numerare.org:13913");
+      full_addrs.insert("cn.numerare.org:13913");
     }
     return full_addrs;
   }
@@ -1392,7 +1393,7 @@ namespace nodetool
     }
     rsp.connections_count = m_net_server.get_config_object().get_connections_count();
     rsp.incoming_connections_count = rsp.connections_count - get_outgoing_connections_count();
-    rsp.version = MONERO_VERSION_FULL;
+    rsp.version = NUMERARE_STRING_VERSION;
     rsp.os_version = tools::get_os_version_string();
     m_payload_handler.get_stat_info(rsp.payload_info);
     return 1;

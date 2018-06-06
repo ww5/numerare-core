@@ -24,55 +24,44 @@
 	Parts of this file are originally Copyright (c) 2012-2014 The CryptoNote developers,
 	                                                2014-2018 The Monero Project
 ***/
+#include <iostream>
 
-#include "misc_log_ex.h"
 
-#include "daemon/executor.h"
+int main(int argc, char* argv[]) {
+    // Check command line arguments.
+    if (argc != 2)
+    {
+        std::cout << "missing number of miners";
+            //"Usage: pool <port> <NUMERARE wallet address>\n" <<
+            //"Example:\n" <<
+            //"    pool 9999 WALLET-ADDRESS\n";
+        return 0;
+    }
 
-#include "cryptonote_config.h"
-#include "version.h"
+    int reward = 1369863;
+    int miners = std::atoi(argv[1]);
 
-#include <string>
+    double fee = 0.01;
+    double dev = 0.003;
+    double finder = 0.1;
 
-#undef MONERO_DEFAULT_LOG_CATEGORY
-#define MONERO_DEFAULT_LOG_CATEGORY "daemon"
+    int pool_fee = reward * fee;    
+    int r_p1 = reward - pool_fee;
 
-namespace daemonize
-{
-  std::string const t_executor::NAME = "Monero Daemon";
+    int dev_fee = r_p1 * dev;
+    int r_p2 = r_p1 - dev_fee;
 
-  void t_executor::init_options(
-      boost::program_options::options_description & configurable_options
-    )
-  {
-    t_daemon::init_options(configurable_options);
-  }
+    int finder_bonus = r_p2 * finder;
+    int r_p3 = r_p2 - finder_bonus;
 
-  std::string const & t_executor::name()
-  {
-    return NAME;
-  }
+    int miners_reward = r_p3 / miners;
+    int reward_dust = r_p3 - (miners_reward * miners);
 
-  t_daemon t_executor::create_daemon(
-      boost::program_options::variables_map const & vm
-    )
-  {
-    LOG_PRINT_L0(NUMERARE_STRING_VERSION << " Daemonised");
-    return t_daemon{vm};
-  }
+    dev_fee += reward_dust;
 
-  bool t_executor::run_non_interactive(
-      boost::program_options::variables_map const & vm
-    )
-  {
-    return t_daemon{vm}.run(false);
-  }
-
-  bool t_executor::run_interactive(
-      boost::program_options::variables_map const & vm
-    )
-  {
-    return t_daemon{vm}.run(true);
-  }
+    std::cout << "pool: " << pool_fee << std::endl
+              << "dev: " << dev_fee << std::endl
+              << "dust: " << reward_dust << std::endl
+              << "bonus: " << finder_bonus << std::endl
+              << "miners: " << miners_reward << std::endl;
 }
-
