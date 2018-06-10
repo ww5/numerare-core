@@ -96,6 +96,8 @@ public:
 
   bool stop_mining(const std::vector<std::string>& args);
 
+  bool print_pool_list(const std::vector<std::string>& args);
+
   bool stop_daemon(const std::vector<std::string>& args);
 
   bool print_status(const std::vector<std::string>& args);

@@ -173,6 +173,9 @@ namespace cryptonote
 
     crypto::hash top_hash;
     m_core.get_blockchain_top(res.height, top_hash);
+
+    res.version = NUMERARE_VERSION;
+    res.already_generated_coins = m_core.get_already_generated_coins();
     ++res.height; // turn top block height into blockchain height
     res.top_block_hash = string_tools::pod_to_hex(top_hash);
     res.target_height = m_core.get_target_blockchain_height();
@@ -834,6 +837,7 @@ namespace cryptonote
       LOG_PRINT_L0(res.status);
       return true;
     }
+
     if (info.is_subaddress)
     {
       res.status = "Mining to subaddress isn't supported yet";
@@ -860,13 +864,21 @@ namespace cryptonote
 
     boost::thread::attributes attrs;
     attrs.set_stack_size(THREAD_STACK_SIZE);
-
-    if(!m_core.get_miner().start(info.address, static_cast<size_t>(req.threads_count), attrs, req.do_background_mining, req.ignore_battery))
+    
+    if(!req.pool.empty()) {
+      if(!m_core.get_miner().start_pool(info.address, static_cast<size_t>(req.threads_count), attrs, req.pool)) {
+        res.status = "Failed, mining not started";
+        LOG_PRINT_L0(res.status);
+        return true;
+      }
+    } 
+    else if(!m_core.get_miner().start(info.address, static_cast<size_t>(req.threads_count), attrs, req.do_background_mining, req.ignore_battery))
     {
       res.status = "Failed, mining not started";
       LOG_PRINT_L0(res.status);
       return true;
     }
+
     res.status = CORE_RPC_STATUS_OK;
     return true;
   }
@@ -880,6 +892,16 @@ namespace cryptonote
       LOG_PRINT_L0(res.status);
       return true;
     }
+    res.status = CORE_RPC_STATUS_OK;
+    return true;
+  }
+  //------------------------------------------------------------------------------------------------------------------------------
+  bool core_rpc_server::on_pool_list(const COMMAND_RPC_PRINT_POOL_LIST::request& req, COMMAND_RPC_PRINT_POOL_LIST::response& res)
+  {
+    PERF_TIMER(on_pool_list);
+    
+    res.list = m_core.get_pool_list();
+
     res.status = CORE_RPC_STATUS_OK;
     return true;
   }
@@ -1560,6 +1582,9 @@ namespace cryptonote
 
     crypto::hash top_hash;
     m_core.get_blockchain_top(res.height, top_hash);
+
+    res.version = NUMERARE_VERSION;
+    res.already_generated_coins = m_core.get_already_generated_coins();
     ++res.height; // turn top block height into blockchain height
     res.top_block_hash = string_tools::pod_to_hex(top_hash);
     res.target_height = m_core.get_target_blockchain_height();

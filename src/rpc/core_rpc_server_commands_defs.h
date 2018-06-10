@@ -902,6 +902,7 @@ namespace cryptonote
     {
       std::string miner_address;
       uint64_t    threads_count;
+      std::string pool;
       bool        do_background_mining;
       bool        ignore_battery;
 
@@ -937,6 +938,7 @@ namespace cryptonote
       std::string status;
       uint64_t height;
       uint64_t target_height;
+      uint64_t already_generated_coins;
       uint64_t difficulty;
       uint64_t target;
       uint64_t tx_count;
@@ -961,11 +963,13 @@ namespace cryptonote
       std::string bootstrap_daemon_address;
       uint64_t height_without_bootstrap;
       bool was_bootstrap_ever_used;
+      std::string version;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(status)
         KV_SERIALIZE(height)
         KV_SERIALIZE(target_height)
+        KV_SERIALIZE(already_generated_coins)
         KV_SERIALIZE(difficulty)
         KV_SERIALIZE(target)
         KV_SERIALIZE(tx_count)
@@ -990,6 +994,7 @@ namespace cryptonote
         KV_SERIALIZE(bootstrap_daemon_address)
         KV_SERIALIZE(height_without_bootstrap)
         KV_SERIALIZE(was_bootstrap_ever_used)
+        KV_SERIALIZE(version)
       END_KV_SERIALIZE_MAP()
     };
   };
@@ -1009,6 +1014,28 @@ namespace cryptonote
     struct response
     {
       std::string status;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(status)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  //-----------------------------------------------
+  struct COMMAND_RPC_PRINT_POOL_LIST
+  {
+    struct request
+    {
+
+      BEGIN_KV_SERIALIZE_MAP()
+      END_KV_SERIALIZE_MAP()
+    };
+
+
+    struct response
+    {
+      std::string status;
+      std::map<std::string, std::string> list;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(status)

@@ -307,6 +307,8 @@ namespace cryptonote
      */
     bool reset_and_set_genesis_block(const block& b);
 
+    uint64_t get_already_generated_coins() const;
+
     /**
      * @brief creates a new block to mine against
      *

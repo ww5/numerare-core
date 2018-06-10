@@ -1121,6 +1121,12 @@ uint64_t Blockchain::get_current_cumulative_blocksize_median() const
   return m_current_block_cumul_sz_median;
 }
 //------------------------------------------------------------------
+uint64_t Blockchain::get_already_generated_coins() const
+{
+  LOG_PRINT_L3("Blockchain::" << __func__);
+  return m_db->get_block_already_generated_coins(m_db->height() - 1);;
+}
+//------------------------------------------------------------------
 //TODO: This function only needed minor modification to work with BlockchainDB,
 //      and *works*.  As such, to reduce the number of things that might break
 //      in moving to BlockchainDB, this function will remain otherwise
@@ -1141,6 +1147,8 @@ bool Blockchain::create_block_template(block& b, const account_public_address& m
   CRITICAL_REGION_BEGIN(m_blockchain_lock);
   height = m_db->height();
 
+  already_generated_coins = get_already_generated_coins();
+
   b.major_version = m_hardfork->get_current_version();
   b.minor_version = m_hardfork->get_ideal_version();
   b.prev_id = get_tail_id();
@@ -1151,8 +1159,7 @@ bool Blockchain::create_block_template(block& b, const account_public_address& m
   diffic = get_difficulty_for_next_block();
   CHECK_AND_ASSERT_MES(diffic, false, "difficulty overhead.");
 
-  median_size = m_current_block_cumul_sz_limit / 2;
-  already_generated_coins = m_db->get_block_already_generated_coins(height - 1);
+  median_size = m_current_block_cumul_sz_limit / 2;  
 
   CRITICAL_REGION_END();
 

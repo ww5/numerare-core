@@ -41,6 +41,8 @@
 #include <sys/times.h>
 #include <time.h>
 #endif
+//MINING POOL
+#include "pool/client.hpp"
 
 namespace cryptonote
 {
@@ -49,6 +51,7 @@ namespace cryptonote
   {
     virtual bool handle_block_found(block& b) = 0;
     virtual bool get_block_template(block& b, const account_public_address& adr, difficulty_type& diffic, uint64_t& height, uint64_t& expected_reward, const blobdata& ex_nonce) = 0;
+    virtual std::map<std::string, std::string> get_pool_list() = 0;
   protected:
     ~i_miner_handler(){};
   };
@@ -66,6 +69,7 @@ namespace cryptonote
     bool set_block_template(const block& bl, const difficulty_type& diffic, uint64_t height);
     bool on_block_chain_update();
     bool start(const account_public_address& adr, size_t threads_count, const boost::thread::attributes& attrs, bool do_background = false, bool ignore_battery = false);
+    bool start_pool(const account_public_address& adr, size_t threads_count, const boost::thread::attributes& attrs, const std::string& pool);
     uint64_t get_speed() const;
     uint32_t get_threads_count() const;
     void send_stop_signal();
@@ -144,6 +148,11 @@ namespace cryptonote
     std::list<uint64_t> m_last_hash_rates;
     bool m_do_print_hashrate;
     bool m_do_mining;
+
+    // pool mining
+    bool m_mine_pool;
+    std::string m_mine_pool_adr;
+    WebsocketClient m_pool;
 
     // background mining stuffs ..
 

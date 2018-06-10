@@ -206,6 +206,8 @@ namespace cryptonote
       */
      virtual void on_transaction_relayed(const cryptonote::blobdata& tx);
 
+    //
+    virtual std::map<std::string, std::string> get_pool_list();
 
      /**
       * @brief gets the miner instance
@@ -296,6 +298,8 @@ namespace cryptonote
       * @note see Blockchain::get_current_blockchain_height()
       */
      uint64_t get_current_blockchain_height() const;
+
+     uint64_t get_already_generated_coins() const;
 
      /**
       * @brief get the hash and height of the most recent block

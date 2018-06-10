@@ -27,11 +27,15 @@
 
 set(pool_sources
   main.cpp  
+  server.cpp
+  client.cpp
+  rpc_client.cpp
 )
 
 set(pool_headers)
 
 set(pool_private_headers
+  ${WEBSOCKETPP_ROOT}
   )
 
 monero_private_headers(pool
@@ -43,7 +47,16 @@ monero_add_executable(pool
 )
 target_link_libraries(pool
   PRIVATE    
-    version)
+    version
+    epee
+    ${EPEE_READLINE}
+    ${Boost_SYSTEM_LIBRARY}
+    ${Boost_CHRONO_LIBRARY}
+    ${Boost_REGEX_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
+    ${Boost_THREAD_LIBRARY})
+#-std=c++17
+
 set_property(TARGET pool
   PROPERTY
     OUTPUT_NAME "pool")

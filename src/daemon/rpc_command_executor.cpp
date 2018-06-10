@@ -1034,13 +1034,19 @@ bool t_rpc_command_executor::print_transaction_pool_stats() {
   return true;
 }
 
-bool t_rpc_command_executor::start_mining(cryptonote::account_public_address address, uint64_t num_threads, cryptonote::network_type nettype, bool do_background_mining, bool ignore_battery) {
+bool t_rpc_command_executor::start_mining(cryptonote::account_public_address address, uint64_t num_threads, cryptonote::network_type nettype, bool do_background_mining, bool ignore_battery, std::string pool) {
   cryptonote::COMMAND_RPC_START_MINING::request req;
   cryptonote::COMMAND_RPC_START_MINING::response res;
   req.miner_address = cryptonote::get_account_address_as_str(nettype, false, address);
   req.threads_count = num_threads;
   req.do_background_mining = do_background_mining;
   req.ignore_battery = ignore_battery;
+
+  if(!pool.empty()) {
+    req.pool = pool;
+  } else {
+    req.pool.clear();
+  }
   
   std::string fail_message = "Mining did not start";
 
@@ -1086,6 +1092,37 @@ bool t_rpc_command_executor::stop_mining() {
   }
 
   tools::success_msg_writer() << "Mining stopped";
+  return true;
+}
+
+bool t_rpc_command_executor::print_pool_list(bool welcome) {
+  cryptonote::COMMAND_RPC_PRINT_POOL_LIST::request req;
+  cryptonote::COMMAND_RPC_PRINT_POOL_LIST::response res;
+
+  std::string fail_message = "ERROR";
+
+  if (m_is_rpc)
+  {
+    tools::fail_msg_writer() << "/pool_list not implemented yet.";
+    return true;  
+  }
+  else
+  {
+    if (!m_rpc_server->on_pool_list(req, res) || res.status != CORE_RPC_STATUS_OK)
+    {
+      tools::fail_msg_writer() << make_error(fail_message, res.status);
+      return true;
+    } 
+  }
+
+  if(welcome)
+    tools::success_msg_writer() << "Official NUMERARE pool servers list";
+
+  for(auto const& [code, link] : res.list) 
+  {
+    tools::msg_writer() << "  " << code << ": " << link;
+  }
+
   return true;
 }
 
@@ -1142,10 +1179,10 @@ bool t_rpc_command_executor::print_status()
   bool daemon_is_alive = m_rpc_client->check_connection();
 
   if(daemon_is_alive) {
-    tools::success_msg_writer() << "monerod is running";
+    tools::success_msg_writer() << "node is running";
   }
   else {
-    tools::fail_msg_writer() << "monerod is NOT running";
+    tools::fail_msg_writer() << "node is NOT running";
   }
 
   return true;

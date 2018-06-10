@@ -308,13 +308,16 @@ bool t_command_parser_executor::start_mining(const std::vector<std::string>& arg
       nettype = cryptonote::TESTNET;
     }
   }
+
   if (info.is_subaddress)
   {
     tools::fail_msg_writer() << "subaddress for mining reward is not yet supported!" << std::endl;
     return true;
   }
+  
   if(nettype != cryptonote::MAINNET)
     std::cout << "Mining to a " << (nettype == cryptonote::TESTNET ? "testnet" : "stagenet") << "address, make sure this is intentional!" << std::endl;
+
   uint64_t threads_count = 1;
   bool do_background_mining = false;  
   bool ignore_battery = false;  
@@ -323,14 +326,26 @@ bool t_command_parser_executor::start_mining(const std::vector<std::string>& arg
     return false;
   }
   
-  if(args.size() == 4)
-  {
-    ignore_battery = args[3] == "true";
-  }  
-  
-  if(args.size() >= 3)
-  {
-    do_background_mining = args[2] == "true";
+  std::string pool;
+  if(args.back() == "pool" || args[(args.size() - 2)] == "pool") {
+    if(args.size() < 4) {
+      m_executor.print_pool_list(false);
+      tools::success_msg_writer() << "select your server from the list:";
+          
+      std::cin >> pool; 
+    } else {
+      pool = args[3];
+    }   
+  } else {
+    if(args.size() == 4)
+    {
+      ignore_battery = args[3] == "true";
+    }  
+    
+    if(args.size() >= 3)
+    {
+      do_background_mining = args[2] == "true";
+    }
   }
   
   if(args.size() >= 2)
@@ -339,7 +354,7 @@ bool t_command_parser_executor::start_mining(const std::vector<std::string>& arg
     threads_count = (ok && 0 < threads_count) ? threads_count : 1;
   }
 
-  m_executor.start_mining(info.address, threads_count, nettype, do_background_mining, ignore_battery);
+  m_executor.start_mining(info.address, threads_count, nettype, do_background_mining, ignore_battery, pool);
 
   return true;
 }
@@ -349,6 +364,11 @@ bool t_command_parser_executor::stop_mining(const std::vector<std::string>& args
   if (!args.empty()) return false;
 
   return m_executor.stop_mining();
+}
+
+bool t_command_parser_executor::print_pool_list(const std::vector<std::string>& args)
+{
+  return m_executor.print_pool_list();
 }
 
 bool t_command_parser_executor::stop_daemon(const std::vector<std::string>& args)

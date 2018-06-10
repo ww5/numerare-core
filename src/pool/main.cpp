@@ -25,7 +25,22 @@
 	                                                2014-2018 The Monero Project
 ***/
 #include <iostream>
+#include <vector>
+#include <thread>
 
+#include "server.hpp"
+#include "client.hpp"
+#include "rpc_client.hpp"
+
+#include "rpc/core_rpc_server_commands_defs.h"
+
+using namespace cryptonote;
+
+WebsocketServer wsServer;
+WebsocketClient wsClient;
+
+void start();
+void startClient();
 
 int main(int argc, char* argv[]) {
     // Check command line arguments.
@@ -42,7 +57,7 @@ int main(int argc, char* argv[]) {
     int miners = std::atoi(argv[1]);
 
     double fee = 0.01;
-    double dev = 0.003;
+    double dev = 0.0033;
     double finder = 0.1;
 
     int pool_fee = reward * fee;    
@@ -63,5 +78,77 @@ int main(int argc, char* argv[]) {
               << "dev: " << dev_fee << std::endl
               << "dust: " << reward_dust << std::endl
               << "bonus: " << finder_bonus << std::endl
-              << "miners: " << miners_reward << std::endl;
+              << "miners: " << miners_reward << std::endl << std::endl;
+
+    std::cout << "total miners reward: " << miners_reward * miners << std::endl;
+    std::cout << "total fee: " << pool_fee + dev_fee << std::endl << std::endl;
+
+    std::cout << "it's " << reward << "? " << miners_reward * miners + finder_bonus + pool_fee + dev_fee << std::endl;
+
+    //connect to node
+    rpcClient n;
+    bool r = n.init("http://localhost:31931");
+    if(r) {
+        bool t;
+        std::thread c;
+
+        wsClient.init(); 
+
+        while(true) {
+            auto cmd = std::cin.get();
+            if(cmd == 'h') {
+                std::cout << "get height..." << std::endl;
+
+                COMMAND_RPC_GET_HEIGHT::request req;
+                COMMAND_RPC_GET_HEIGHT::response res = boost::value_initialized<COMMAND_RPC_GET_HEIGHT::response>();
+                if(n.invoke_http_json("/getheight", req, res)) {
+                    std::cout << res.height << std::endl;
+                }
+            } else if(cmd == 'c') {
+                std::cout << "start client..." << std::endl;
+                //if(!c.joinable())
+                    //c = std::thread(startClient);
+                wsClient.run();
+            } else if(cmd == 'd') {
+                std::cout << "start ws server..." << std::endl;
+                if(!t) {                
+                    wsServer.init(); 
+                    wsServer.run();
+                }
+            } else if(cmd == 's') {
+                std::cout << "stop client..." << std::endl;
+                wsClient.stop();
+                //c.join();                
+            } else if(cmd == 'q') {
+                break;
+            }
+        }
+
+        std::cout << "stop rpc..." << std::endl;
+        n.deinit();
+
+        std::cout << "stop ws client..." << std::endl;    
+        wsClient.uninit();
+        
+        //if(t.joinable()) {
+        std::cout << "stop ws server..." << std::endl;    
+        wsServer.stop();
+        //    t.join();
+        //}
+
+    } else {
+        std::cout << "error RPC: node doesn't respond!" << std::endl;    
+    }
+    
+    std::cout << "exit now!" << std::endl;
+
+    return 0;
+}
+
+void start() {   
+    
+}
+
+void startClient() {        
+   
 }

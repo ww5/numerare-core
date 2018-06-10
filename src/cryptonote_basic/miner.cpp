@@ -76,7 +76,6 @@ using namespace epee;
 
 #include "miner.h"
 
-
 extern "C" void slow_hash_allocate_state();
 extern "C" void slow_hash_free_state();
 namespace cryptonote
@@ -93,8 +92,7 @@ namespace cryptonote
     const command_line::arg_descriptor<uint16_t>     arg_bg_mining_idle_threshold_percentage =  {"bg-mining-idle-threshold", "Specify minimum avg idle percentage over lookback interval", miner::BACKGROUND_MINING_DEFAULT_IDLE_THRESHOLD_PERCENTAGE, true};
     const command_line::arg_descriptor<uint16_t>     arg_bg_mining_miner_target_percentage =  {"bg-mining-miner-target", "Specify maximum percentage cpu use by miner(s)", miner::BACKGROUND_MINING_DEFAULT_MINING_TARGET_PERCENTAGE, true};
   }
-
-
+  
   miner::miner(i_miner_handler* phandler):m_stop(1),
     m_template(boost::value_initialized<block>()),
     m_template_no(0),
@@ -114,13 +112,18 @@ namespace cryptonote
     m_min_idle_seconds(BACKGROUND_MINING_DEFAULT_MIN_IDLE_INTERVAL_IN_SECONDS),
     m_idle_threshold(BACKGROUND_MINING_DEFAULT_IDLE_THRESHOLD_PERCENTAGE),
     m_mining_target(BACKGROUND_MINING_DEFAULT_MINING_TARGET_PERCENTAGE),
-    m_miner_extra_sleep(BACKGROUND_MINING_DEFAULT_MINER_EXTRA_SLEEP_MILLIS)
-  {
-
+    m_miner_extra_sleep(BACKGROUND_MINING_DEFAULT_MINER_EXTRA_SLEEP_MILLIS),
+    m_mine_pool(false)
+  {    
+    //turn on websocket
+    m_pool.init();
   }
   //-----------------------------------------------------------------------------------------------------
   miner::~miner()
-  {
+  {    
+    //turn off websocket
+    m_pool.uninit();
+
     stop();
   }
   //-----------------------------------------------------------------------------------------------------
@@ -219,7 +222,7 @@ namespace cryptonote
   }
   //-----------------------------------------------------------------------------------------------------
   bool miner::init(const boost::program_options::variables_map& vm, network_type nettype)
-  {
+  {    
     if(command_line::has_arg(vm, arg_extra_messages))
     {
       std::string buff;
@@ -292,6 +295,7 @@ namespace cryptonote
   //-----------------------------------------------------------------------------------------------------
   bool miner::start(const account_public_address& adr, size_t threads_count, const boost::thread::attributes& attrs, bool do_background, bool ignore_battery)
   {
+    m_mine_pool = false;
     m_mine_address = adr;
     m_threads_total = static_cast<uint32_t>(threads_count);
     m_starter_nonce = crypto::rand<uint32_t>();
@@ -307,7 +311,7 @@ namespace cryptonote
       LOG_ERROR("Unable to start miner because there are active mining threads");
       return false;
     }
-
+    
     request_block_template();//lets update block template
 
     boost::interprocess::ipcdetail::atomic_write32(&m_stop, 0);
@@ -327,7 +331,56 @@ namespace cryptonote
       m_background_mining_thread = boost::thread(attrs, boost::bind(&miner::background_worker_thread, this));
       LOG_PRINT_L0("Background mining controller thread started" );
     }
+    
+    return true;
+  }
+  //-----------------------------------------------------------------------------------------------------
+  bool miner::start_pool(const account_public_address& adr, size_t threads_count, const boost::thread::attributes& attrs, const std::string& pool)
+  {
+    auto pools = m_phandler->get_pool_list();
+    if(pools.find(pool) == pools.end()) {
+      LOG_ERROR("wrong pool selected!");
+      return false;
+    }
 
+    m_mine_pool = true;
+    m_mine_pool_adr = pools[pool];
+    m_mine_address = adr;
+    
+    CRITICAL_REGION_LOCAL(m_threads_lock);
+    if(is_mining())
+    {
+      LOG_ERROR("Starting miner but it's already started");
+      return false;
+    }
+
+    if(!m_threads.empty())
+    {
+      LOG_ERROR("Unable to start miner because there are active mining threads");
+      return false;
+    }
+
+    /*m_threads_total = static_cast<uint32_t>(threads_count);
+    m_starter_nonce = crypto::rand<uint32_t>();
+    
+    request_block_template();//lets update block template
+
+    boost::interprocess::ipcdetail::atomic_write32(&m_stop, 0);
+    boost::interprocess::ipcdetail::atomic_write32(&m_thread_index, 0);
+        
+    for(size_t i = 0; i != threads_count; i++)
+    {
+      m_threads.push_back(boost::thread(attrs, boost::bind(&miner::worker_thread, this)));
+    }*/
+
+    if(!m_pool.run(m_mine_pool_adr)) {
+      LOG_ERROR("Pool server is offline or doesn't respond");
+      return false;
+    }
+
+    LOG_PRINT_L0("Mining has started with pool " << m_mine_pool_adr );
+    LOG_PRINT_L0("Mining has started with " << threads_count << " threads, good luck!" );
+    
     return true;
   }
   //-----------------------------------------------------------------------------------------------------
@@ -343,7 +396,7 @@ namespace cryptonote
   //-----------------------------------------------------------------------------------------------------
   void miner::send_stop_signal()
   {
-    boost::interprocess::ipcdetail::atomic_write32(&m_stop, 1);
+    boost::interprocess::ipcdetail::atomic_write32(&m_stop, 1);   
   }
   //-----------------------------------------------------------------------------------------------------
   bool miner::stop()
@@ -353,11 +406,19 @@ namespace cryptonote
     if (!is_mining())
     {
       MDEBUG("Not mining - nothing to stop" );
-      return true;
+      //return true;
     }
 
     send_stop_signal();
     CRITICAL_REGION_LOCAL(m_threads_lock);
+    
+    if(m_mine_pool) {
+      m_pool.stop();
+      LOG_PRINT_L0("websocket connection " << m_mine_pool_adr << " closed" );
+
+      m_mine_pool_adr.clear();
+      m_mine_pool = false;
+    } 
 
     // In case background mining was active and the miner threads are waiting
     // on the background miner to signal start. 
@@ -373,6 +434,7 @@ namespace cryptonote
 
     MINFO("Mining has been stopped, " << m_threads.size() << " finished" );
     m_threads.clear();
+
     return true;
   }
   //-----------------------------------------------------------------------------------------------------
@@ -400,7 +462,10 @@ namespace cryptonote
       boost::thread::attributes attrs;
       attrs.set_stack_size(THREAD_STACK_SIZE);
 
-      start(m_mine_address, m_threads_total, attrs, get_is_background_mining_enabled(), get_ignore_battery());
+      if(m_mine_pool) {
+      } else {
+        start(m_mine_address, m_threads_total, attrs, get_is_background_mining_enabled(), get_ignore_battery());
+      }
     }
   }
   //-----------------------------------------------------------------------------------------------------

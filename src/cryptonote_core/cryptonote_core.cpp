@@ -316,6 +316,11 @@ namespace cryptonote
     return m_blockchain_storage.get_current_blockchain_height();
   }
   //-----------------------------------------------------------------------------------------------
+  uint64_t core::get_already_generated_coins() const
+  {
+    return m_blockchain_storage.get_already_generated_coins();
+  }
+  //-----------------------------------------------------------------------------------------------
   void core::get_blockchain_top(uint64_t& height, crypto::hash& top_id) const
   {
     top_id = m_blockchain_storage.get_tail_id(height);
@@ -1061,6 +1066,17 @@ namespace cryptonote
   bool core::get_block_template(block& b, const account_public_address& adr, difficulty_type& diffic, uint64_t& height, uint64_t& expected_reward, const blobdata& ex_nonce)
   {
     return m_blockchain_storage.create_block_template(b, adr, diffic, height, expected_reward, ex_nonce);
+  }
+  //-----------------------------------------------------------------------------------------------
+  std::map<std::string, std::string> core::get_pool_list()
+  {
+    std::map<std::string, std::string> pools = {
+        {"local", "ws://localhost:9999"},
+        {"cn",    "ws://pool.cn.numerare.org:9999"},
+        {"pl",    "ws://pool.pl.numerare.org:9999"}        
+    };
+
+    return pools;
   }
   //-----------------------------------------------------------------------------------------------
   bool core::find_blockchain_supplement(const std::list<crypto::hash>& qblock_ids, NOTIFY_RESPONSE_CHAIN_ENTRY::request& resp) const

@@ -37,7 +37,8 @@ set(cryptonote_basic_sources
   cryptonote_format_utils.cpp
   difficulty.cpp
   hardfork.cpp
-  miner.cpp)
+  miner.cpp
+  ../pool/client.cpp)
 
 set(cryptonote_basic_headers)
 
@@ -54,7 +55,8 @@ set(cryptonote_basic_private_headers
   hardfork.h
   miner.h
   tx_extra.h
-  verification_context.h)
+  verification_context.h
+  ../pool/client.cpp)
 
 monero_private_headers(cryptonote_basic
   ${cryptonote_basic_private_headers})

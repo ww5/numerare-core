@@ -102,11 +102,13 @@ public:
 
   bool print_transaction_pool_stats();
 
-  bool start_mining(cryptonote::account_public_address address, uint64_t num_threads, cryptonote::network_type nettype, bool do_background_mining = false, bool ignore_battery = false);
+  bool start_mining(cryptonote::account_public_address address, uint64_t num_threads, cryptonote::network_type nettype, bool do_background_mining = false, bool ignore_battery = false, std::string pool = "");
 
   bool stop_mining();
 
   bool stop_daemon();
+
+  bool print_pool_list(bool welcome = true);
 
   bool print_status();
 

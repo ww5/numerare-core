@@ -448,6 +448,8 @@ namespace rpc
     boost::thread::attributes attrs;
     attrs.set_stack_size(THREAD_STACK_SIZE);
 
+    //req.pool
+
     if(!m_core.get_miner().start(info.address, static_cast<size_t>(req.threads_count), attrs, req.do_background_mining, req.ignore_battery))
     {
       res.error_details = "Failed, mining not started";

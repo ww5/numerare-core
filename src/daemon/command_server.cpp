@@ -102,13 +102,18 @@ t_command_server::t_command_server(
   m_command_lookup.set_handler(
       "start_mining"
     , std::bind(&t_command_parser_executor::start_mining, &m_parser, p::_1)
-    , "start_mining <addr> [<threads>] [do_background_mining] [ignore_battery]"
+    , "start_mining <addr> [<threads>] [do_background_mining] [ignore_battery] or start_mining <addr> [<threads>] [<pool>]"
     , "Start mining for specified address. Defaults to 1 thread and no background mining."
     );
   m_command_lookup.set_handler(
       "stop_mining"
     , std::bind(&t_command_parser_executor::stop_mining, &m_parser, p::_1)
     , "Stop mining."
+    );
+  m_command_lookup.set_handler(
+      "pool_list"
+    , std::bind(&t_command_parser_executor::print_pool_list, &m_parser, p::_1)
+    , "Print the official pool servers list."
     );
   m_command_lookup.set_handler(
       "print_pool"
